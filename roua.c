@@ -74,9 +74,44 @@ void nr_roua(FILE *fin, FILE *fout, unsigned short N, unsigned short R)
 
 void nr_rfrumoase(FILE *fin, FILE *fout, unsigned short N, unsigned short R)
 {
-	if (N % R == 0)
-		fprintf(fout, "%u", R*9);
-	else 
-		fprintf(fout, "%u", 3*R + 6*(N%R));
+	unsigned short r, c, x, nrcif, *cif, p, rest;
+	short i;
+
+	r = N%R, c = N/R, x = 2*r + R;
+
+	for (nrcif = 0; x; x /= 10) {
+		nrcif++;
+
+		if (nrcif == 1)
+			cif = (unsigned short*)malloc(nrcif*sizeof(unsigned short));
+		else
+			cif = (unsigned short*)realloc(cif, nrcif*sizeof(unsigned short));
+		
+		cif[nrcif-1] = x%10;
+	}
+
+	while (c) {
+		for (rest = i = 0; i < nrcif; i++) {
+			p = cif[i]*3 + rest;
+
+			cif[i] = p%10;
+
+			rest = p/10;
+		}
+
+		if (rest) {
+			nrcif++;
+
+			cif = (unsigned short*)realloc(cif, nrcif*sizeof(unsigned short));
+
+			cif[nrcif-1] = rest;
+		}
+
+		c--;
+	}	
+
+	for (i = nrcif-1; i >= 0; i--) fprintf(fout, "%hu", cif[i]);
+
+	free(cif);
 }
-// scor 44
+// scor 100
