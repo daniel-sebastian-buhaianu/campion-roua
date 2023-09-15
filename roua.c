@@ -74,8 +74,9 @@ void nr_roua(FILE *fin, FILE *fout, unsigned short N, unsigned short R)
 
 void nr_rfrumoase(FILE *fin, FILE *fout, unsigned short N, unsigned short R)
 {
-	//TODO
-
-	return;
+	if (N % R == 0)
+		fprintf(fout, "%u", R*9);
+	else 
+		fprintf(fout, "%u", 3*R + 6*(N%R));
 }
-// scor 35
+// scor 44
